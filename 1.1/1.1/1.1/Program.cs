@@ -21,6 +21,13 @@ namespace _1._1
         static void Main(string[] args)
         {
             Thread t = new Thread(new ThreadStart(ThreadMethod));
+            t.Start();
+            for (int i = 0; i < 4; i++)
+            {
+                Console.WriteLine("Main Thread do some work");
+                Thread.Sleep(0);
+            }
+            t.Join();
         }
     }
 }
