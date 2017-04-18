@@ -64,10 +64,65 @@ class Program
 				Console.WriteLine("Running");
 				Thread.Sleep();
 			}			
-		}
-	}));
-	t.Start();
+		}));
+		t.Start();
+	}
+	
 	Console.WriteLine("Press any key to exit");
 	Console.ReadKey();
 
 }
+
+--------------------------------------------------------------
+[ThreadStatic]
+Static variable specially for each Thread
+
+class Program
+{
+	[ThreadStatic]
+	public static int _field;
+	Static void Main(string[] args)
+	{
+		Thread t1 = new Thread( new ThreadStart(() =>
+		{	
+			for(int i = 0; i<10; i++))
+			{
+				_field++;
+				Console.WriteLine("Thread A: {0}", _filed);				
+			}
+					
+		}));
+		t1.Start();
+
+		Thread t2 = new Thread( new ThreadStart(() =>
+		{	
+			for(int i = 0; i<10; i++))
+			{
+				_field++;
+				Console.WriteLine("Thread B: {0}", _filed);				
+			}
+					
+		}));
+		t2.Start();
+	}
+	
+	Console.WriteLine("Press any key to exit");
+	Console.ReadKey();
+
+}
+
+-------------------------------------------------------------
+ThreadPool
+
+class program
+{
+	static void Main(string[] args)
+	{
+		ThreadPool.QueueUserWorkItem((s) =>
+		{
+			Console.WriteLine("Working on a thread from the threadPool"};		
+		});
+		Console.ReadLine();
+	}
+}
+
