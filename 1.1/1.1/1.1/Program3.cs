@@ -9,5 +9,11 @@ namespace _1._1
     class Program3
     {
         int a;
+        asfsasf
+            asddfsadf
+            asdf
+            asfasdf
+            asdfsaf
+            asfsafsaf
     }
 }
