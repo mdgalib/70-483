@@ -49,3 +49,25 @@ public static void Main()
 	t.Start(15);
 	t.Join();
 }
+
+----------------------------------------------------
+lamda expression:
+
+class Program
+{
+	Static void Main(string[] args)
+	{
+		bool stopped = false;
+		Thread t = new Thread( new ThreadStart(() =>
+		{	while(!stopped)
+			{
+				Console.WriteLine("Running");
+				Thread.Sleep();
+			}			
+		}
+	}));
+	t.Start();
+	Console.WriteLine("Press any key to exit");
+	Console.ReadKey();
+
+}
