@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _1._1
 {
-    class Program3
+    class Program2
     {
         int a;
         asfsasf
