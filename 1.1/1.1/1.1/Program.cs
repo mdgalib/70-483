@@ -29,6 +29,7 @@ namespace _1._1
             }
             t.Join();
             Console.WriteLine("branch feature1 a little change this is feature2");
+            Console.WriteLine("This is after feature3");
         }
 
     }
