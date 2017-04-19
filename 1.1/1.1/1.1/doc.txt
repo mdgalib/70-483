@@ -327,3 +327,114 @@ Wait for all the tasks to finish
             }
         }
     }
+
+--------------------------------------------------------------------
+ //Paralal for loop running each for simultinously. Effective when
+ //for loop tasks are independed.
+
+ class Program4
+    {
+        static void Main(string[] args)
+        {
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    Thread.Sleep(1000);
+            //    Console.WriteLine(i);
+            //}
+
+            Console.WriteLine("START");
+            Thread.Sleep(2000);
+
+            Parallel.For(0, 10, (i) =>
+            {
+                Thread.Sleep(1000);
+                Console.WriteLine(i);
+
+            });
+        }
+    }
+
+--------------------------------------------------------------------
+ //Paralal foreach running each for simultinously. Effective when
+ //foreach tasks are independed.
+
+	class Program4
+    {
+        static void Main(string[] args)
+        {
+            int[] myArray = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            //foreach (var x in myArray)
+            //{                
+            //    Console.WriteLine(x);
+            //    Thread.Sleep(1000);
+            //}
+
+
+            Console.WriteLine("START");
+            Thread.Sleep(2000);
+
+            Parallel.ForEach(myArray, (i) => 
+            {
+                Console.WriteLine(i);
+                Thread.Sleep(1000);
+            });
+           
+        }
+    }
+
+--------------------------------------------------------------------
+ //async and await
+ //run function sepratedly in a different thread and return the result
+ //when it is ready.
+
+	class Program4
+    {
+        static void Main(string[] args)
+        {
+            string result = DownloadContent().Result;
+            Console.WriteLine(result);      
+        }
+
+        public static async Task<string> DownloadContent()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string result = await client.GetStringAsync("http://www.microsoft.com");
+                return result;
+            }
+
+        }
+    }
+
+	------------------------------------------------------------------------
+	Paralal link
+
+	 class Program4
+    {
+        static void Main(string[] args)
+        {
+            var sources = Enumerable.Range(100, 20000);
+            var parallelQuery = from num in sources.AsParallel()
+                                where num % 100 == 0
+                                select num;
+           
+            foreach (var item in parallelQuery)
+            {
+                Console.WriteLine(item);
+            }               
+        }   
+    }
+	------------------------------------------------------------------------
+
+The SynchronizedCollection<T> class was introduced first in .NET 2.0 to provide a 
+thread-safe collection class. It does this via locking so that you essentially have 
+a List<T> where every access is wrapped in a lock statement.
+
+The System.Collections.Concurrent namespace is much newer. 
+It wasn't introduced until .NET 4.0 and it includes a substantially improved and more 
+diverse set of choices. These classes no longer use locks to provide thread safety, 
+which means they should scale better in a situation where multiple threads are 
+accessing their data simultaneously. However, a class implementing the IList<T> 
+interface is notably absent among these options.
+
+	------------------------------------------------------------------------
