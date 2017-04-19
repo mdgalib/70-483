@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace _1._1
 {
@@ -10,24 +11,21 @@ namespace _1._1
     {
         static void Main(string[] args)
         {
-            Task<int> t = Task.Run(() =>
+            Task<int>[] tasks = new Task<int>[3];
+
+            tasks[0] = Task.Run(() => { Thread.Sleep(2000); return 1;});
+            tasks[1] = Task.Run(() => { Thread.Sleep(1000); return 2; });
+            tasks[2] = Task.Run(() => { Thread.Sleep(3000); return 3; });
+
+            while (tasks.Length > 0)
             {
-                //throw new Exception();
-                return 42;
-            });
-
-            t.ContinueWith((i) =>
-            {
-                Console.WriteLine("Faulted");
-            }, TaskContinuationOptions.OnlyOnFaulted);
-
-            t.ContinueWith((i) =>
-            {
-                Console.WriteLine("Completed");
-
-            },TaskContinuationOptions.OnlyOnRanToCompletion);
-            Console.WriteLine(t.Result);
-
+                int i = Task.WaitAny(tasks);
+                Task<int> completedTask = tasks[i];
+                Console.WriteLine(completedTask.Result);
+                var temp = tasks.ToList();
+                temp.RemoveAt(i);
+                tasks = temp.ToArray();
+            }
         }
     }
 }

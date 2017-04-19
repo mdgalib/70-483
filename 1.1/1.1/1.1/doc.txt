@@ -1,0 +1,329 @@
+1.1
+-------------------
+Creating thread with the delegate ThreadStart
+
+public static void ThreadMethod()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		Console.WriteLine("ThreadProc {0}", 1);
+		Thread.Sleep(0);
+	}
+}
+
+public static void Main()
+{
+	Thread t = new Thread (new ThreadStart(ThreadMeathod));
+	t.Start();
+	for (int i = 0; i < 4; i++)
+	{
+		Console.WriteLine("Main Thread: Do some work");
+		Thread.Sleep(0);
+	}
+	t.Join();
+}
+
+t.Join = waits for all thread to finish before program stops
+-------------------------------
+IsBackground = true;
+IsForegorund = true;
+
+by default foreground thread.
+program waits if its forground thread.
+
+---------------------------------
+Passing value to thread:
+
+public static void ThreadMethod(object o)
+{
+	for (int i = 0; i < (int)o; i++)
+	{
+		Console.WriteLine("ThreadProc {0}", i);
+		Thread.Sleep(0);
+	}
+}
+
+public static void Main()
+{
+	Thread t = new Thread (new ParameterizedThreadStart(ThreadMeathod));
+	t.Start(15);
+	t.Join();
+}
+
+----------------------------------------------------
+lamda expression:
+
+class Program
+{
+	Static void Main(string[] args)
+	{
+		bool stopped = false;
+		Thread t = new Thread( new ThreadStart(() =>
+		{	while(!stopped)
+			{
+				Console.WriteLine("Running");
+				Thread.Sleep();
+			}			
+		}));
+		t.Start();
+	}
+	
+	Console.WriteLine("Press any key to exit");
+	Console.ReadKey();
+
+}
+
+--------------------------------------------------------------
+[ThreadStatic]
+Static variable specially for each Thread
+
+class Program
+{
+	[ThreadStatic]
+	public static int _field;
+	Static void Main(string[] args)
+	{
+		Thread t1 = new Thread( new ThreadStart(() =>
+		{	
+			for(int i = 0; i<10; i++))
+			{
+				_field++;
+				Console.WriteLine("Thread A: {0}", _filed);				
+			}
+					
+		}));
+		t1.Start();
+
+		Thread t2 = new Thread( new ThreadStart(() =>
+		{	
+			for(int i = 0; i<10; i++))
+			{
+				_field++;
+				Console.WriteLine("Thread B: {0}", _filed);				
+			}
+					
+		}));
+		t2.Start();
+	}
+	
+	Console.WriteLine("Press any key to exit");
+	Console.ReadKey();
+
+}
+
+-------------------------------------------------------------
+ThreadPool
+
+class program
+{
+	static void Main(string[] args)
+	{
+		ThreadPool.QueueUserWorkItem((s) =>
+		{
+			Console.WriteLine("Working on a thread from the threadPool"};		
+		});
+		Console.ReadLine();
+	}
+}
+
+---------------------------------------------------------------
+Managed ThreadPool (Task)
+Task is s managed Threadpool Thread
+using lambda
+
+class Program
+{
+	static void Main(string[] args)
+	{
+		Task t = Task.Run(() =>
+		{
+
+			for(int i = 0; i< 100; i++)
+			{
+				Console.WriteLine('*');
+			}
+		});
+		t.Wait();
+	}
+}
+
+---------------------------------------------------------------
+Managed ThreadPool (Task)
+Task is s managed Threadpool Thread
+using function
+action: used when the delegate method has no return value
+function: used when the delegate method has a return value
+
+class Program
+{
+	public static void ThreadMethod()
+	{
+		for(int i = 0; i < 100; i++)
+		{
+			Console.WriteLine('*');
+		}
+	}
+	static void Main(string[] args)
+	{
+		Task t = Task.Run(action:ThreadMethod)			
+		t.Wait();
+	}
+}
+
+---------------------------------------------------------------
+Managed ThreadPool (Task)
+Task is s managed Threadpool Thread
+using delegate
+RETURN VALUE
+//no need to use t.Wait() since we are assigning the value back to t
+// and the program knows when the value is available
+
+class Program
+{
+	static void Main(string[] args)
+	{
+		Task<int> t = Task.Run(() =>
+		{		
+			return 42;
+		});
+		Console.WritLine(t.Result);
+	}
+}
+
+---------------------------------------------------------------
+Continuation:
+//i in this case holds value for t
+//will display 84
+class Program
+{
+	static void Main(string[] args)
+	{
+		Task<int> t = Task.Run(() =>
+		{		
+			return 42;
+		}).ContinueWith((i) =>
+			{
+				return i.Result * 2; 
+
+			});
+		Console.WritLine(t.Result);
+	}
+}
+
+---------------------------------------------------------------
+Continuation using outsite of lambda function:
+//i in this case holds value for t
+//will display 168
+class Program
+    {
+        static void Main(string[] args)
+        {
+            Task<int> t = Task.Run(() =>
+            {
+                return 42;
+            }).ContinueWith((i) =>
+            {
+                return i.Result * 2;
+
+            });
+
+            t = t.ContinueWith((i) =>
+            {
+                return i.Result * 2;
+            });
+
+
+            Console.WriteLine(t.Result);
+        }
+    }
+
+
+---------------------------------------------------------------
+Continuation overload
+will only continue if error happend or completed successfully.
+
+
+ class Program
+    {
+        static void Main(string[] args)
+        {
+            Task<int> t = Task.Run(() =>
+            {
+                //throw new Exception();
+                return 42;
+            });
+
+            t.ContinueWith((i) =>
+            {
+                Console.WriteLine("Faulted");
+            }, TaskContinuationOptions.OnlyOnFaulted);
+
+            t.ContinueWith((i) =>
+            {
+                Console.WriteLine("Completed");
+
+            },TaskContinuationOptions.OnlyOnRanToCompletion);
+            Console.WriteLine(t.Result);
+
+        }
+
+---------------------------------------------------------------
+Task.WaitAll(tasks[])
+Wait for all the tasks to finish
+
+ class Program4
+    {
+        static void Main(string[] args)
+        {
+            Task[] tasks = new Task[3];
+
+            tasks[0] = Task.Run(() => 
+            {
+                Thread.Sleep(1000);
+                Console.WriteLine("1");
+                return 1;
+            });
+
+            tasks[1] = Task.Run(() =>
+            {
+                Thread.Sleep(2000);
+                Console.WriteLine("2");
+                return 1;
+            });
+
+            tasks[2] = Task.Run(() =>
+            {
+                Thread.Sleep(3000);
+                Console.WriteLine("3");
+                return 1;
+            });
+            Task.WaitAll(tasks);
+           
+        }
+    }
+
+--------------------------------------------------------------------
+ //use Task.WaitAny() to wait on any task and then diplay the output of the
+ // task to the user.
+
+   class Program4
+    {
+        static void Main(string[] args)
+        {
+            Task<int>[] tasks = new Task<int>[3];
+
+            tasks[0] = Task.Run(() => { Thread.Sleep(2000); return 1;});
+            tasks[1] = Task.Run(() => { Thread.Sleep(1000); return 2; });
+            tasks[2] = Task.Run(() => { Thread.Sleep(3000); return 3; });
+
+            while (tasks.Length > 0)
+            {
+                int i = Task.WaitAny(tasks);
+                Task<int> completedTask = tasks[i];
+                Console.WriteLine(completedTask.Result);
+                var temp = tasks.ToList();
+                temp.RemoveAt(i);
+                tasks = temp.ToArray();
+            }
+        }
+    }
