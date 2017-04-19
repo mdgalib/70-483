@@ -8,7 +8,7 @@ namespace _1._1
 {
     class Program3
     {
-        static void Main(string[] args)
+        static void MainProgram3(string[] args)
         {
             Task<int> t = Task.Run(() =>
             {
