@@ -18,7 +18,7 @@ namespace _1._1
             }
         }
 
-        static void Main(string[] args)
+        static void Main1(string[] args)
         {
             Thread t = new Thread(new ThreadStart(ThreadMethod));
             t.Start();

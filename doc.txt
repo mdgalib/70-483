@@ -129,6 +129,7 @@ class program
 ---------------------------------------------------------------
 Managed ThreadPool (Task)
 Task is s managed Threadpool Thread
+using lambda
 
 class Program
 {
@@ -146,6 +147,92 @@ class Program
 	}
 }
 
+---------------------------------------------------------------
+Managed ThreadPool (Task)
+Task is s managed Threadpool Thread
+using function
+action: used when the delegate method has no return value
+function: used when the delegate method has a return value
+
+class Program
+{
+	public static void ThreadMethod()
+	{
+		for(int i = 0; i < 100; i++)
+		{
+			Console.WriteLine('*');
+		}
+	}
+	static void Main(string[] args)
+	{
+		Task t = Task.Run(action:ThreadMethod)			
+		t.Wait();
+	}
+}
+
+---------------------------------------------------------------
+Managed ThreadPool (Task)
+Task is s managed Threadpool Thread
+using delegate
+RETURN VALUE
+//no need to use t.Wait() since we are assigning the value back to t
+// and the program knows when the value is available
+
+class Program
+{
+	static void Main(string[] args)
+	{
+		Task<int> t = Task.Run(() =>
+		{		
+			return 42;
+		});
+		Console.WritLine(t.Result);
+	}
+}
+
+---------------------------------------------------------------
+Continuation:
+//i in this case holds value for t
+//will display 84
+class Program
+{
+	static void Main(string[] args)
+	{
+		Task<int> t = Task.Run(() =>
+		{		
+			return 42;
+		}).ContinueWith((i) =>
+			{
+				return i.Result * 2; 
+
+			});
+		Console.WritLine(t.Result);
+	}
+}
+
+---------------------------------------------------------------
+Continuation using outsite of lambda function:
+//i in this case holds value for t
+//will display 168
+class Program
+    {
+        static void Main(string[] args)
+        {
+            Task<int> t = Task.Run(() =>
+            {
+                return 42;
+            }).ContinueWith((i) =>
+            {
+                return i.Result * 2;
+
+            });
+
+            t = t.ContinueWith((i) =>
+            {
+                return i.Result * 2;
+            });
 
 
-
+            Console.WriteLine(t.Result);
+        }
+    }
