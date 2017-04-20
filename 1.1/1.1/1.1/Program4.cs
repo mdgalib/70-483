@@ -9,17 +9,19 @@ namespace _1._1
 {
     class Program4
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            var sources = Enumerable.Range(100, 20000);
-            var parallelQuery = from num in sources.AsParallel()
-                                where num % 100 == 0
-                                select num;
-           
-            foreach (var item in parallelQuery)
+            string result = GetData().Result;
+            Console.WriteLine(result);
+        }
+
+        public static async Task<string> GetData()
+        {
+            using (HttpClient client = new HttpClient())
             {
-                Console.WriteLine(item);
-            }               
-        }   
+                string result = await client.GetStringAsync("http://www.morphisinc.com");
+                return result;
+            }
+        }
     }
 }

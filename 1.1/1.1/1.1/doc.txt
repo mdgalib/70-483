@@ -81,6 +81,7 @@ class Program
 {
 	[ThreadStatic]
 	public static int _field;
+
 	Static void Main(string[] args)
 	{
 		Thread t1 = new Thread( new ThreadStart(() =>
@@ -437,4 +438,9 @@ which means they should scale better in a situation where multiple threads are
 accessing their data simultaneously. However, a class implementing the IList<T> 
 interface is notably absent among these options.
 
-	------------------------------------------------------------------------
+------------------------------------------------------------------------
+************************************************************************************
+************************************************************************************
+************************************************************************************
+
+
