@@ -31,6 +31,9 @@ namespace _1._1
             Console.WriteLine("branch feature1 a little change this is feature2");
             Console.WriteLine("just adding another line in master branch");
             Console.WriteLine("This is after feature3");
+            Console.WriteLine("Temp");
+            Console.WriteLine("Temp1");
+
         }
 
     }
